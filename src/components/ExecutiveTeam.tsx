@@ -78,9 +78,6 @@ function MemberCard({
       </div>
 
       <div className={cn("mt-5", featured && "sm:mt-0")}>
-        {featured && (
-          <p className="label-mono mb-2 text-lime-dim">Patron</p>
-        )}
         <p className="font-display text-lg font-semibold leading-snug">
           {member.name}
         </p>

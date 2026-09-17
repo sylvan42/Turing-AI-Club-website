@@ -5,9 +5,9 @@ import {
   AnimatePresence,
   motion,
   useReducedMotion,
-  useScroll,
   useTransform,
 } from "framer-motion";
+import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { Bus, CloudSun, Wallet, BookOpenText } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
@@ -119,10 +119,7 @@ function ConceptCard({ concept }: { concept: Concept }) {
 export function Theme() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
+  const scrollYProgress = useSectionProgress(sectionRef, 0, 1, 1, 0);
   const parallaxA = useTransform(scrollYProgress, [0, 1], [24, -24]);
   const parallaxB = useTransform(scrollYProgress, [0, 1], [-16, 16]);
 

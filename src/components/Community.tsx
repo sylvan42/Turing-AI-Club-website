@@ -4,10 +4,10 @@ import { useRef } from "react";
 import {
   motion,
   useReducedMotion,
-  useScroll,
   useTransform,
   type MotionValue,
 } from "framer-motion";
+import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { Reveal } from "@/components/Reveal";
 import { disciplines } from "@/lib/content";
 
@@ -18,10 +18,7 @@ import { disciplines } from "@/lib/content";
 export function Community() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.85", "center center"],
-  });
+  const scrollYProgress = useSectionProgress(sectionRef, 0, 0.85, 0.5, 0.5);
   const converge = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const centerOpacity = useTransform(scrollYProgress, [0.55, 1], [0, 1]);
   const centerScale = useTransform(scrollYProgress, [0.55, 1], [0.85, 1]);

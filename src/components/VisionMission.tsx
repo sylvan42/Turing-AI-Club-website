@@ -1,21 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useTransform } from "framer-motion";
+import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { Reveal } from "@/components/Reveal";
 
 export function VisionMission() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  const scrollYProgress = useSectionProgress(sectionRef, 0, 0, 1, 1);
 
   // Vision holds, then morphs into Mission across the sticky window.
   const visionOpacity = useTransform(scrollYProgress, [0.15, 0.45], [1, 0]);

@@ -5,10 +5,10 @@ import {
   motion,
   useMotionValueEvent,
   useReducedMotion,
-  useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
+import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { Reveal } from "@/components/Reveal";
 import { stages } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -23,10 +23,7 @@ export function ClubProcess() {
   const reduced = useReducedMotion();
   const [activeStage, setActiveStage] = useState(0);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  const scrollYProgress = useSectionProgress(sectionRef, 0, 0, 1, 1);
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 24 });
   const pathLength = useTransform(smooth, [0.05, 0.92], [0, 1]);
 

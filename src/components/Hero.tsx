@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useTransform } from "framer-motion";
+import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { HeroCanvas } from "@/components/HeroCanvas";
 import { MagneticButton } from "@/components/MagneticButton";
 import { stages } from "@/lib/content";
@@ -18,12 +14,8 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
 
-  // 0 while the hero fills the viewport → 1 once it has scrolled away.
   // Progress across the sticky window (extra 60svh of scroll room).
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
+  const scrollYProgress = useSectionProgress(sectionRef, 0, 0, 1, 1);
   const morph = useTransform(scrollYProgress, [0.05, 0.85], [0, 1]);
   const contentOpacity = useTransform(scrollYProgress, [0.1, 0.6], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0.1, 0.6], [0, -60]);
