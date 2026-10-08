@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 function initials(name: string) {
   return name
+    .replace(/^Dr\.\s+/, "")
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
@@ -33,7 +34,6 @@ function MemberCard({
 
   return (
     <motion.div
-      tabIndex={0}
       onMouseEnter={onFocus}
       onMouseLeave={onBlur}
       onFocus={onFocus}

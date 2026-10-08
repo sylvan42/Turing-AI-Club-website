@@ -18,8 +18,8 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
   return (
     <Component
       className={cn(className)}
-      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18, scale: 0.995 }}
-      whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+      whileInView={reduced ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
     >

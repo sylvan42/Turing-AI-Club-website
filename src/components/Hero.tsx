@@ -19,13 +19,14 @@ export function Hero() {
   const morph = useTransform(scrollYProgress, [0.05, 0.85], [0, 1]);
   const contentOpacity = useTransform(scrollYProgress, [0.1, 0.6], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0.1, 0.6], [0, -60]);
+  const pointerEvents = useTransform(scrollYProgress, [0.1, 0.6], ["auto", "none"]);
   const stripOpacity = useTransform(scrollYProgress, [0.35, 0.7], [0, 1]);
 
   return (
     <section
       ref={sectionRef}
       id="top"
-      className="relative flex min-h-[160svh] flex-col overflow-hidden"
+      className="relative flex min-h-[130svh] flex-col overflow-hidden"
     >
       <div className="bg-grid absolute inset-0" aria-hidden />
       <div className="sticky top-0 flex min-h-svh w-full items-center overflow-hidden">
@@ -35,7 +36,7 @@ export function Hero() {
         />
         <HeroCanvas morph={morph} />
         <motion.div
-          style={reduced ? undefined : { opacity: contentOpacity, y: contentY }}
+          style={reduced ? undefined : { opacity: contentOpacity, y: contentY, pointerEvents: pointerEvents as any }}
           className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6"
         >
           <motion.p
@@ -61,7 +62,7 @@ export function Hero() {
                 }}
               >
                 {word === "AI" ? <span className="text-lime">{word}</span> : word}
-                {i < HEADLINE_WORDS.length - 1 && <span>&nbsp;</span>}
+                {i < HEADLINE_WORDS.length - 1 && " "}
               </motion.span>
             ))}
           </h1>
@@ -105,7 +106,7 @@ export function Hero() {
         <motion.div
           aria-hidden
           style={reduced ? undefined : { opacity: stripOpacity }}
-          className="absolute inset-x-0 bottom-[6svh] z-10 hidden justify-between px-[6vw] sm:flex"
+          className="absolute inset-x-0 bottom-[6svh] z-10 flex flex-wrap justify-center gap-3 px-4 sm:justify-between sm:px-[6vw]"
         >
           {stages.map((stage, i) => (
             <div key={stage.name} className="flex items-center gap-3">
@@ -126,7 +127,7 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4, duration: 0.8 }}
           style={reduced ? undefined : { opacity: contentOpacity }}
-          className="absolute bottom-[6svh] left-1/2 z-10 -translate-x-1/2 text-faint transition-colors hover:text-lime sm:hidden"
+          className="absolute bottom-[2svh] left-1/2 z-10 -translate-x-1/2 text-faint transition-colors hover:text-lime sm:hidden"
         >
           <ChevronDown className="animate-pulse-soft h-6 w-6" />
         </motion.a>

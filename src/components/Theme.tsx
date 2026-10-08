@@ -1,13 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   AnimatePresence,
   motion,
   useReducedMotion,
-  useTransform,
 } from "framer-motion";
-import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { Bus, CloudSun, Wallet, BookOpenText } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { cn } from "@/lib/utils";
@@ -93,7 +91,7 @@ function ConceptCard({ concept }: { concept: Concept }) {
           ))}
         </div>
 
-        <div className="relative mt-3 min-h-[4.5rem] flex-1">
+        <div className="relative mt-3 min-h-[5.5rem] flex-1">
           <AnimatePresence mode="wait">
             <motion.p
               key={step}
@@ -109,7 +107,8 @@ function ConceptCard({ concept }: { concept: Concept }) {
         </div>
 
         <span className="label-mono mt-4 text-faint transition-colors duration-300 group-hover:text-muted">
-          Tap to explore →
+          <span className="sm:hidden">Tap to explore →</span>
+          <span className="hidden sm:inline">Click to explore →</span>
         </span>
       </button>
     </div>
@@ -117,15 +116,10 @@ function ConceptCard({ concept }: { concept: Concept }) {
 }
 
 export function Theme() {
-  const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const scrollYProgress = useSectionProgress(sectionRef, 0, 1, 1, 0);
-  const parallaxA = useTransform(scrollYProgress, [0, 1], [24, -24]);
-  const parallaxB = useTransform(scrollYProgress, [0, 1], [-16, 16]);
 
   return (
     <section
-      ref={sectionRef}
       className="relative overflow-hidden py-28 sm:py-36"
     >
       {/* Soft tint shift so the canvas keeps evolving */}
@@ -170,15 +164,13 @@ export function Theme() {
         </Reveal>
       </div>
 
-      {/* Decorative parallax nodes */}
-      <motion.div
+      {/* Decorative accent dots */}
+      <div
         aria-hidden
-        style={reduced ? undefined : { y: parallaxA }}
         className="absolute left-[8%] top-24 h-2 w-2 rounded-full bg-lime/40"
       />
-      <motion.div
+      <div
         aria-hidden
-        style={reduced ? undefined : { y: parallaxB }}
         className="absolute right-[12%] bottom-24 h-1.5 w-1.5 rounded-full bg-paper/30"
       />
     </section>

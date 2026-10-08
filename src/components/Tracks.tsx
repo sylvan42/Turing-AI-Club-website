@@ -56,7 +56,7 @@ export function Tracks() {
           <div
             role="group"
             aria-label="Choose a learning track"
-            className="mt-12 inline-flex rounded-full border border-line bg-ink-2 p-1.5"
+            className="mt-12 inline-flex rounded-full border border-line bg-ink-2 p-1.5 md:hidden"
           >
             {tracks.map((t) => (
               <button
@@ -86,7 +86,7 @@ export function Tracks() {
 
         {/* Track panels */}
         <div className="mt-10 grid gap-6 md:grid-cols-[1.4fr_1fr]">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             <motion.div
               key={track.id}
               initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
@@ -145,7 +145,7 @@ export function Tracks() {
                 animate={reduced ? undefined : { opacity: 0.75, scale: 0.985 }}
                 whileHover={reduced ? undefined : { opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="cursor-pointer rounded-3xl border border-line bg-ink-2/60 p-8 text-left transition-colors duration-300 hover:border-lime/25 sm:p-10"
+                className="hidden cursor-pointer rounded-3xl border border-line bg-ink-2/60 p-8 text-left transition-colors duration-300 hover:border-lime/25 sm:p-10 md:block"
               >
                 <p className="label-mono text-faint">Track {other.index}</p>
                 <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-muted">

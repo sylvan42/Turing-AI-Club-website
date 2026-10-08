@@ -87,3 +87,24 @@ body {
     animation: none;
   }
 }
+
+/* Dark scrollbar for Webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-faint);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* Firefox */
+html {
+  scrollbar-color: var(--color-faint) var(--color-ink);
+  scrollbar-width: thin;
+}

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { navLinks, CONTACT_EMAIL } from "@/lib/content";
 
 export function Footer() {
@@ -5,8 +6,8 @@ export function Footer() {
     <footer className="border-t border-line py-12">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-4">
-          <img
-            src="logo.png"
+          <Image
+            src="/logo.png"
             alt="TuringAI Club — AI for transformation"
             width={200}
             height={40}

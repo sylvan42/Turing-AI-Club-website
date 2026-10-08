@@ -13,9 +13,9 @@ export function VisionMission() {
   // Vision holds, then morphs into Mission across the sticky window.
   const visionOpacity = useTransform(scrollYProgress, [0.15, 0.45], [1, 0]);
   const visionY = useTransform(scrollYProgress, [0.15, 0.45], [0, -46]);
-  const missionOpacity = useTransform(scrollYProgress, [0.42, 0.68], [0, 1]);
+  const missionOpacity = useTransform(scrollYProgress, [0.45, 0.68], [0, 1]);
   const missionY = useTransform(scrollYProgress, [0.42, 0.68], [46, 0]);
-  const indexY = useTransform(scrollYProgress, [0.15, 0.68], ["0%", "-50%"]);
+  const indexY = useTransform(scrollYProgress, [0.4, 0.5], ["0%", "-50%"]);
   const bannerOpacity = useTransform(scrollYProgress, [0.7, 0.88], [0, 1]);
 
   if (reduced) {
@@ -50,7 +50,7 @@ export function VisionMission() {
     <section
       ref={sectionRef}
       id="vision"
-      className="relative min-h-[280svh] scroll-mt-20"
+      className="relative min-h-[200svh] scroll-mt-20"
     >
       <div className="sticky top-0 flex min-h-svh items-center overflow-hidden">
         <div

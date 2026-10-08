@@ -28,23 +28,30 @@ export function MagneticButton({
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 220, damping: 18 });
   const springY = useSpring(y, { stiffness: 220, damping: 18 });
+  const rectRef = useRef<DOMRect | null>(null);
+
+  const onPointerEnter = () => {
+    if (ref.current) rectRef.current = ref.current.getBoundingClientRect();
+  };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!magnetic || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    x.set((e.clientX - (rect.left + rect.width / 2)) * 0.18);
-    y.set((e.clientY - (rect.top + rect.height / 2)) * 0.18);
+    if (!magnetic || !rectRef.current) return;
+    const rect = rectRef.current;
+    x.set((e.clientX - (rect.left + rect.width / 2)) * 0.12);
+    y.set((e.clientY - (rect.top + rect.height / 2)) * 0.12);
   };
 
   const onPointerLeave = () => {
     x.set(0);
     y.set(0);
+    rectRef.current = null;
   };
 
   return (
     <motion.a
       ref={ref}
       href={href}
+      onPointerEnter={onPointerEnter}
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       style={magnetic ? { x: springX, y: springY } : undefined}

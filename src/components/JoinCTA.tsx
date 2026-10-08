@@ -54,7 +54,7 @@ export function JoinCTA() {
               WhatsApp community group
             </span>
             <span className="label-mono text-faint">
-              Group link placeholder — shared at onboarding
+              Link shared after joining — ask any committee member
             </span>
           </div>
         </Reveal>

@@ -27,7 +27,7 @@ export function ClubProcess() {
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 24 });
   const pathLength = useTransform(smooth, [0.05, 0.92], [0, 1]);
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
+  useMotionValueEvent(smooth, "change", (v) => {
     const idx = Math.min(3, Math.max(0, Math.floor((v - 0.05) / 0.225)));
     setActiveStage(idx);
   });
@@ -61,9 +61,9 @@ export function ClubProcess() {
     <section
       ref={sectionRef}
       id="how-it-works"
-      className="relative min-h-[400svh] scroll-mt-20"
+      className="relative min-h-[250svh] scroll-mt-20"
     >
-      <div className="sticky top-0 flex min-h-svh flex-col justify-center overflow-hidden py-20">
+      <div className="sticky top-0 flex min-h-svh flex-col justify-center overflow-hidden py-8 sm:py-20">
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <ProcessHeading />
 
@@ -106,7 +106,7 @@ export function ClubProcess() {
                 viewBox="0 0 320 340"
                 fill="none"
                 aria-hidden
-                className="mx-auto w-full max-w-[320px]"
+                className="mx-auto w-full max-w-[260px] sm:max-w-[320px]"
               >
                 {/* Base path */}
                 <path

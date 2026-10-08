@@ -51,8 +51,25 @@ export function Community() {
           </p>
         </Reveal>
 
-        {/* Converging discipline field */}
-        <div className="relative mx-auto mt-16 flex h-[22rem] max-w-3xl items-center justify-center sm:h-[26rem]">
+        {/* Mobile: simple tag cloud — avoids overlapping radial nodes */}
+        <div className="mt-16 flex flex-wrap justify-center gap-2 sm:hidden">
+          {disciplines.map((d) => (
+            <span key={d} className="label-mono rounded-full border border-line bg-ink-2 px-4 py-2 text-muted">
+              {d}
+            </span>
+          ))}
+          <div className="mt-4 flex w-full justify-center">
+            <div className="flex flex-col items-center gap-3 rounded-full border border-lime/30 bg-ink px-10 py-8 text-center">
+              <span className="font-display text-2xl font-bold tracking-tight">
+                Turing<span className="text-lime">AI</span>
+              </span>
+              <span className="label-mono text-faint">Where they meet</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: converging discipline field */}
+        <div className="relative mx-auto mt-16 hidden h-[22rem] max-w-3xl items-center justify-center sm:flex sm:h-[26rem]">
           {/* Connection lines */}
           <motion.svg
             aria-hidden

@@ -57,9 +57,9 @@ export function About() {
         <Reveal delay={0.16}>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
             A community for students who want to understand AI and apply it to
-            real problems. A student club that turns AI learning into real
-            projects — open to every course at Makerere, bringing together
-            different disciplines and skill levels to learn side by side.
+            real problems. We bring together different disciplines and skill
+            levels to learn side by side, turning coursework into real
+            projects — open to every course at Makerere.
           </p>
         </Reveal>
 
@@ -69,7 +69,7 @@ export function About() {
             {/* Connector line across the chain (desktop) */}
             <div
               aria-hidden
-              className="absolute left-0 right-0 top-9 hidden h-px sm:block"
+              className="absolute left-0 right-0 top-[38px] hidden h-px sm:block"
             >
               <motion.div
                 className="h-full bg-gradient-to-r from-lime/0 via-lime/40 to-lime/0"
@@ -97,9 +97,10 @@ export function About() {
                 >
                   <button
                       type="button"
-                      onClick={() => setActiveIndex(active ? null : i)}
-                      onMouseEnter={() => setActiveIndex(i)}
-                      onMouseLeave={() => setActiveIndex(null)}
+                      onPointerEnter={() => setActiveIndex(i)}
+                      onPointerLeave={() => setActiveIndex(null)}
+                      onFocus={() => setActiveIndex(i)}
+                      onBlur={() => setActiveIndex(null)}
                       aria-expanded={active}
                       className={cn(
                         "group flex h-full w-full cursor-pointer flex-col items-start gap-3 rounded-2xl border p-5 text-left transition-all duration-300 sm:items-center sm:text-center",
@@ -135,7 +136,7 @@ export function About() {
             })}
             </ol>
           </div>
-          <p className="label-mono mt-8 text-center text-faint">
+          <p className="label-mono mt-8 text-center text-muted">
             One flows into the next — that is the club.
           </p>
         </div>

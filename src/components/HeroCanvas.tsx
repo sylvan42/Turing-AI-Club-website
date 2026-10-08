@@ -11,6 +11,7 @@ type Node = {
   vy: number;
   r: number;
   cluster: number;
+  index: number;
 };
 
 const LIME = "163, 230, 53";
@@ -63,6 +64,7 @@ export function HeroCanvas({ morph }: { morph: MotionValue<number> }) {
         vy: (Math.random() - 0.5) * 0.35,
         r: 1.2 + Math.random() * 1.8,
         cluster: i % 4,
+        index: i,
       });
     }
 
@@ -154,7 +156,7 @@ export function HeroCanvas({ morph }: { morph: MotionValue<number> }) {
         } else {
           // Lerp toward the node's cluster with slight jitter ring
           const c = clusterCenter(n.cluster);
-          const angle = (nodes.indexOf(n) / NODE_COUNT) * Math.PI * 2;
+          const angle = (n.index / NODE_COUNT) * Math.PI * 2;
           const ring = 18 + (n.r - 1.2) * 14;
           const tx = c.x + Math.cos(angle * 3) * ring;
           const ty = c.y + Math.sin(angle * 3) * ring * 0.5;
@@ -176,6 +178,7 @@ export function HeroCanvas({ morph }: { morph: MotionValue<number> }) {
     }
 
     const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
       const rect = canvas.getBoundingClientRect();
       pointer.x = e.clientX - rect.left;
       pointer.y = e.clientY - rect.top;
