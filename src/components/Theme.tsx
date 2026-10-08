@@ -116,8 +116,6 @@ function ConceptCard({ concept }: { concept: Concept }) {
 }
 
 export function Theme() {
-  const reduced = useReducedMotion();
-
   return (
     <section
       className="relative overflow-hidden py-28 sm:py-36"

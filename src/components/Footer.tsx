@@ -1,4 +1,5 @@
 import Image from "next/image";
+import logo from "../../public/logo.png";
 import { navLinks, CONTACT_EMAIL } from "@/lib/content";
 
 export function Footer() {
@@ -7,10 +8,8 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-4">
           <Image
-            src="/logo.png"
+            src={logo}
             alt="TuringAI Club — AI for transformation"
-            width={200}
-            height={40}
             className="h-10 w-auto"
           />
           <p className="label-mono text-faint">AI for transformation</p>

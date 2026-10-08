@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { motion, useReducedMotion, useTransform } from "framer-motion";
 import { useSectionProgress } from "@/hooks/useScrollProgress";
 import { HeroCanvas } from "@/components/HeroCanvas";
@@ -36,7 +36,7 @@ export function Hero() {
         />
         <HeroCanvas morph={morph} />
         <motion.div
-          style={reduced ? undefined : { opacity: contentOpacity, y: contentY, pointerEvents: pointerEvents as any }}
+          style={reduced ? undefined : { opacity: contentOpacity, y: contentY, pointerEvents }}
           className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6"
         >
           <motion.p
@@ -50,20 +50,22 @@ export function Hero() {
 
           <h1 className="max-w-4xl font-display text-[clamp(2.75rem,9vw,6.5rem)] font-bold leading-[0.98] tracking-tight">
             {HEADLINE_WORDS.map((word, i) => (
-              <motion.span
-                key={word}
-                className="inline-block"
-                initial={reduced ? { opacity: 0 } : { opacity: 0, y: "0.4em" }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.15 + i * 0.09,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {word === "AI" ? <span className="text-lime">{word}</span> : word}
+              <Fragment key={word}>
+                <motion.span
+                  className="inline-block"
+                  initial={reduced ? { opacity: 0 } : { opacity: 0, y: "0.4em" }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.7,
+                    delay: 0.15 + i * 0.09,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  {word === "AI" ? <span className="text-lime">{word}</span> : word}
+                </motion.span>
+                {/* Trailing whitespace inside an inline-block collapses, so the gap lives between them. */}
                 {i < HEADLINE_WORDS.length - 1 && " "}
-              </motion.span>
+              </Fragment>
             ))}
           </h1>
 

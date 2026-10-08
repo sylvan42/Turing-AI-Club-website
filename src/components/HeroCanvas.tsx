@@ -48,11 +48,21 @@ export function HeroCanvas({ morph }: { morph: MotionValue<number> }) {
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
+      const prevWidth = width;
+      const prevHeight = height;
       width = rect.width;
       height = rect.height;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Keep nodes spread across the new size. Node velocity decays to zero,
+      // so nodes seeded while the canvas measured 0px would otherwise stay
+      // piled on the edge.
+      for (const n of nodes) {
+        n.x = prevWidth > 0 ? (n.x / prevWidth) * width : Math.random() * width;
+        n.y = prevHeight > 0 ? (n.y / prevHeight) * height : Math.random() * height;
+      }
     };
     resize();
 
@@ -207,18 +217,18 @@ export function HeroCanvas({ morph }: { morph: MotionValue<number> }) {
     };
     document.addEventListener("visibilitychange", onVisibility);
 
-    const onResize = () => {
+    const resizeObserver = new ResizeObserver(() => {
       resize();
       if (reduced) draw(0);
-    };
-    window.addEventListener("resize", onResize);
+    });
+    resizeObserver.observe(canvas);
 
     return () => {
       running = false;
       cancelAnimationFrame(raf);
       parent.removeEventListener("pointermove", onPointerMove);
       parent.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("resize", onResize);
+      resizeObserver.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       observer.disconnect();
     };
