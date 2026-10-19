@@ -1,29 +1,32 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
-type RevealProps = {
-  children: React.ReactNode;
-  className?: string;
+/**
+ * Entrance for one part of a section (heading → text → picture).
+ * Triggered once on entry. Reduced motion: content shown, no travel.
+ */
+export function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: ReactNode;
   delay?: number;
-  as?: "div" | "p" | "h2" | "h3" | "span";
-};
-
-/** Shared scroll-reveal primitive: opacity + slight rise, fired once. */
-export function Reveal({ children, className, delay = 0, as = "div" }: RevealProps) {
+  className?: string;
+}) {
   const reduced = useReducedMotion();
-  const Component = motion[as];
 
   return (
-    <Component
-      className={cn(className)}
-      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-      whileInView={reduced ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+    <motion.div
+      className={className}
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
-    </Component>
+    </motion.div>
   );
 }

@@ -1,137 +1,187 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useTransform } from "framer-motion";
-import { useSectionProgress } from "@/hooks/useScrollProgress";
-import { HeroCanvas } from "@/components/HeroCanvas";
-import { MagneticButton } from "@/components/MagneticButton";
-import { stages } from "@/lib/content";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { hero, navLinks } from "@/lib/content";
+import { Mark } from "@/components/Mark";
 
-const HEADLINE_WORDS = ["AI", "for", "everyday", "problems."];
+/** Live thing: the fixed rail is the navigation; the active section's
+ * label lifts to white and its dot ticks lime. Watches the anchor sections. */
+function useActiveChapter(ids: string[]) {
+  const [active, setActive] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+    if (sections.length === 0) return;
+
+    const pick = () => {
+      const mid = window.innerHeight / 2;
+      let current: string | null = null;
+      for (const el of sections) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= mid && rect.bottom > mid) {
+          current = el.id;
+          break;
+        }
+      }
+      setActive(current);
+    };
+
+    pick();
+    const observer = new IntersectionObserver(pick, {
+      rootMargin: "-45% 0px -45% 0px",
+    });
+    for (const el of sections) observer.observe(el);
+    window.addEventListener("scroll", pick, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", pick);
+    };
+  }, [ids.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return active;
+}
+
+function ChapterRail({ active }: { active: string | null }) {
+  return (
+    <nav
+      aria-label="Site sections"
+      className="fixed top-0 right-0 z-40 hidden h-svh w-[76px] shrink-0 flex-col justify-center md:flex"
+    >
+      {navLinks.map((link) => {
+        const isActive = active === link.href.slice(1);
+        return (
+          <a
+            key={link.href}
+            href={link.href}
+            aria-current={isActive ? "true" : undefined}
+            className="group relative flex items-center gap-2 py-5 pl-6 text-fog transition-colors duration-300 hover:text-paper"
+          >
+            <span
+              aria-hidden
+              className={`h-2 w-2 rounded-full transition-colors duration-300 ${
+                isActive ? "bg-lime" : "bg-white/25 group-hover:bg-white/50"
+              }`}
+            />
+            <span
+              className={`leading-tight [writing-mode:vertical-rl] mr-5 step-small transition-colors duration-300 ${
+                isActive ? "font-bold text-paper" : "font-medium"
+              }`}
+            >
+              {link.label}
+            </span>
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
+
+function MobileBars() {
+  return (
+    <nav
+      aria-label="Site sections"
+      className="grid grid-cols-2 gap-px bg-ink md:hidden"
+    >
+      {navLinks.map((link) => (
+        <a
+          key={link.href}
+          href={link.href}
+          className="flex h-[52px] items-start bg-panel px-4 py-3 step-small font-medium text-paper transition-colors hover:bg-[#202020]"
+        >
+          {link.label}
+        </a>
+      ))}
+      {/* 5th link keeps the pair odd; the join anchor fills the gap */}
+      <a
+        href="#join"
+        className="flex h-[52px] items-start bg-lime px-4 py-3 step-small font-bold text-ink transition-colors hover:bg-[#d7fb63]"
+      >
+        Join
+      </a>
+    </nav>
+  );
+}
 
 export function Hero() {
-  const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+  const { scrollY } = useScroll();
+  // One live drift: the mark rises gently as the page leaves the hero
+  const markY = useTransform(scrollY, [0, 800], [0, -90]);
 
-  // Progress across the sticky window (extra 60svh of scroll room).
-  const scrollYProgress = useSectionProgress(sectionRef, 0, 0, 1, 1);
-  const morph = useTransform(scrollYProgress, [0.05, 0.85], [0, 1]);
-  const contentOpacity = useTransform(scrollYProgress, [0.1, 0.6], [1, 0]);
-  const contentY = useTransform(scrollYProgress, [0.1, 0.6], [0, -60]);
-  const pointerEvents = useTransform(scrollYProgress, [0.1, 0.6], ["auto", "none"]);
-  const stripOpacity = useTransform(scrollYProgress, [0.35, 0.7], [0, 1]);
+  const active = useActiveChapter(navLinks.map((l) => l.href.slice(1)));
 
   return (
-    <section
-      ref={sectionRef}
-      id="top"
-      className="relative flex min-h-[130svh] flex-col overflow-hidden"
-    >
-      <div className="bg-grid absolute inset-0" aria-hidden />
-      <div className="sticky top-0 flex min-h-svh w-full items-center overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-1/3 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.05] blur-3xl"
-        />
-        <HeroCanvas morph={morph} />
-        <motion.div
-          style={reduced ? undefined : { opacity: contentOpacity, y: contentY, pointerEvents: pointerEvents as any }}
-          className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6"
-        >
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="label-mono mb-6 text-faint"
-          >
-            Makerere University · CEDAT
-          </motion.p>
+    <header>
+      {/* Mobile bars sit on top of the hero, inside the flow */}
+      <div className="relative flex min-h-[92svh] flex-col md:h-svh">
+        <ChapterRail active={active} />
 
-          <h1 className="max-w-4xl font-display text-[clamp(2.75rem,9vw,6.5rem)] font-bold leading-[0.98] tracking-tight">
-            {HEADLINE_WORDS.map((word, i) => (
-              <motion.span
-                key={word}
-                className="inline-block"
-                initial={reduced ? { opacity: 0 } : { opacity: 0, y: "0.4em" }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.15 + i * 0.09,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {word === "AI" ? <span className="text-lime">{word}</span> : word}
-                {i < HEADLINE_WORDS.length - 1 && " "}
-              </motion.span>
-            ))}
-          </h1>
+        {/* Wordmark */}
+        <div className="flex items-center gap-3 px-6 pt-8 sm:px-10">
+          <Mark className="h-8 w-8 text-lime" />
+          <p className="font-bold uppercase tracking-[0.14em]">
+            Turing<span className="text-lime">AI</span> Club
+          </p>
+        </div>
 
+        {/* Headline + sentence + action, left-anchored like the logo lockup */}
+        <div className="flex flex-1 flex-col justify-center px-6 pb-16 pt-10 sm:px-10">
+          {reduced ? (
+            <h1 className="display max-w-[12ch]">
+              AI, <span className="text-lime">done here.</span>
+            </h1>
+          ) : (
+            <motion.h1
+              className="display max-w-[12ch]"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
+              AI, <span className="text-lime">done here.</span>
+            </motion.h1>
+          )}
           <motion.p
-            initial={{ opacity: 0, y: reduced ? 0 : 14 }}
+            className="ink-soft step-lead mt-8 max-w-[34ch] font-medium"
+            initial={reduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
+            transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
           >
-            TuringAI Club is a student community at Makerere University turning
-            AI learning into practical innovation.
+            {hero.sentence}
           </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.75 }}
-            className="label-mono mt-5 text-lime-dim"
-          >
-            Learn. Collaborate. Build. Demonstrate.
-          </motion.p>
-
           <motion.div
-            initial={{ opacity: 0, y: reduced ? 0 : 14 }}
+            className="mt-10"
+            initial={reduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.85 }}
-            className="mt-10 flex flex-wrap items-center gap-4"
+            transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            <MagneticButton href="#join">
-              Join TuringAI
-              <ArrowRight className="h-4 w-4" />
-            </MagneticButton>
-            <MagneticButton href="#about" variant="ghost">
-              Explore the Club
-            </MagneticButton>
+            <a href="#join" className="btn">
+              Join the club
+              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+                <path
+                  d="M2 9h13M10 3l6 6-6 6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </a>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Philosophy strip the network reorganizes toward */}
+        {/* The mark as the hero's graphic, drawn in on load */}
         <motion.div
-          aria-hidden
-          style={reduced ? undefined : { opacity: stripOpacity }}
-          className="absolute inset-x-0 bottom-[6svh] z-10 flex flex-wrap justify-center gap-3 px-4 sm:justify-between sm:px-[6vw]"
+          style={reduced ? undefined : { y: markY }}
+          className="pointer-events-none absolute bottom-[8vh] right-[10%] hidden w-[clamp(240px,24vw,400px)] text-lime/90 md:block"
         >
-          {stages.map((stage, i) => (
-            <div key={stage.name} className="flex items-center gap-3">
-              <span className="label-mono text-paper/90">
-                {stage.name.toUpperCase()}
-              </span>
-              {i < stages.length - 1 && (
-                <ArrowRight className="h-3.5 w-3.5 text-lime/60" />
-              )}
-            </div>
-          ))}
+          <Mark animate className="w-full" />
         </motion.div>
-
-        <motion.a
-          href="#about"
-          aria-label="Scroll to About section"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 0.8 }}
-          style={reduced ? undefined : { opacity: contentOpacity }}
-          className="absolute bottom-[2svh] left-1/2 z-10 -translate-x-1/2 text-faint transition-colors hover:text-lime sm:hidden"
-        >
-          <ChevronDown className="animate-pulse-soft h-6 w-6" />
-        </motion.a>
       </div>
-    </section>
+      <MobileBars />
+    </header>
   );
 }

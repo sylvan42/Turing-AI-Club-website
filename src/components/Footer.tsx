@@ -1,29 +1,52 @@
-import Image from "next/image";
-import { navLinks, CONTACT_EMAIL } from "@/lib/content";
+"use client";
 
-export function Footer() {
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { navLinks, CONTACT_EMAIL, BASE } from "@/lib/content";
+import { Mark } from "@/components/Mark";
+
+function KampalaTime() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Africa/Kampala",
+    });
+    const tick = () => setTime(fmt.format(new Date()));
+    tick();
+    const id = setInterval(tick, 30_000);
+    return () => clearInterval(id);
+  }, []);
   return (
-    <footer className="border-t border-line py-12">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 sm:px-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-4">
-          <Image
-            src="/logo.png"
-            alt="TuringAI Club — AI for transformation"
-            width={200}
-            height={40}
-            className="h-10 w-auto"
-          />
-          <p className="label-mono text-faint">AI for transformation</p>
+    <p className="step-lead font-bold">
+      Kampala · <span aria-label="local time">{time}</span>
+    </p>
+  );
+}
+
+/** The footer: one tile board, dark panels with lime for the invite. */
+export function Footer() {
+  const mailto = `mailto:${CONTACT_EMAIL}`;
+
+  const tile =
+    "flex flex-col justify-between p-6 min-h-[220px] rounded-[12px] bg-panel";
+
+  return (
+    <footer className="footer-board isolate bg-ink">
+      <div className="grid gap-2 md:grid-cols-12">
+        <div className={`${tile} md:col-span-4`}>
+          <Mark className="h-9 w-9 self-start text-lime" />
+          <p className="step-lead font-bold leading-tight">
+            Learn. Collaborate. Build. Demonstrate.
+          </p>
         </div>
 
-        <nav aria-label="Footer">
-          <ul className="flex flex-wrap gap-x-6 gap-y-3">
+        <nav aria-label="Footer" className={`${tile} md:col-span-3`}>
+          <ul className="space-y-2 step-body font-medium">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="text-sm text-muted transition-colors duration-200 hover:text-lime"
-                >
+                <a href={link.href} className="transition-colors hover:text-lime">
                   {link.label}
                 </a>
               </li>
@@ -31,23 +54,65 @@ export function Footer() {
           </ul>
         </nav>
 
-        <div className="flex flex-col gap-2 md:items-end">
+        <div className={`${tile} md:col-span-2`}>
+          <KampalaTime />
+          <p className="ink-soft step-small">East Africa Time (UTC+3)</p>
+        </div>
+
+        <div className={`${tile} md:col-span-3`}>
+          <p className="ink-soft step-small font-medium">
+            One email reaches everyone:
+          </p>
           <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="text-sm text-muted transition-colors duration-200 hover:text-lime"
+            href={mailto}
+            className="step-body font-bold break-all hover:text-lime"
           >
             {CONTACT_EMAIL}
           </a>
-          <p className="label-mono text-faint">
-            CEDAT · Makerere University
+        </div>
+
+        <div className={`${tile} !min-h-[320px] !bg-ink md:col-span-8`}>
+          <Image
+            src={`${BASE}/logo.png`}
+            alt="TuringAI Club logo, taglined AI for transformation"
+            width={320}
+            height={95}
+            className="h-auto w-64 self-center md:w-[420px]"
+          />
+          <p className="ink-soft step-small flex items-center gap-4">
+            <Mark className="h-6 w-6 text-lime" />
+            CEDAT · Makerere University · Kampala
           </p>
         </div>
-      </div>
-      <div className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
-        <p className="label-mono border-t border-line pt-6 text-faint">
-          © {new Date().getFullYear()} TuringAI Club · Learn. Collaborate.
-          Build. Demonstrate.
-        </p>
+
+        <a
+          href={mailto}
+          className={`${tile} !bg-lime text-ink md:col-span-4 hover:bg-[#d7fb63]`}
+        >
+          <p className="step-lead font-bold leading-tight">
+            Join the
+            <br />
+            club this
+            <br />
+            year.
+          </p>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            aria-hidden
+            className="self-end"
+          >
+            <path
+              d="M4 20h30M22 8l12 12-12 12"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
       </div>
     </footer>
   );

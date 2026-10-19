@@ -1,166 +1,177 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Check } from "lucide-react";
+import { tracks, topicNotes, disciplines } from "@/lib/content";
 import { Reveal } from "@/components/Reveal";
-import { tracks } from "@/lib/content";
-import { cn } from "@/lib/utils";
 
-export function Tracks() {
-  const [selected, setSelected] = useState<"beginner" | "intermediate">(
-    "beginner",
+/* Small drawn bullets for the menu items (flat lime shapes, one language) */
+function TopicBullet({ topic }: { topic: string }) {
+  const lime = "var(--color-lime)";
+  const s = {
+    stroke: lime,
+    strokeWidth: 6,
+    fill: "none" as const,
+    strokeLinecap: "round" as const,
+  };
+  let art: React.ReactNode;
+  const label =
+    topic === "Python"
+      ? "PY"
+      : topic === "Working with data"
+        ? "data"
+        : topic === "Charts"
+          ? "charts"
+          : topic === "Basic statistics"
+            ? "stats"
+            : topic === "First machine learning ideas"
+              ? "mli"
+              : topic === "Machine learning"
+                ? "ml"
+                : topic === "Text"
+                  ? "text"
+                  : topic === "Images"
+                    ? "img"
+                    : topic === "Prediction"
+                      ? "pred"
+                      : "fast";
+
+  switch (label) {
+    case "PY":
+      art = (
+        <path d="M45 30c-8 8-8 30 8 36M45 76c14 6 22-4 18-14" {...s} />
+      ); // serpent line
+      break;
+    case "data":
+      art = (
+        <>
+          <line x1="30" y1="34" x2="76" y2="34" {...s} />
+          <line x1="53" y1="24" x2="53" y2="82" {...s} />
+          <rect x="70" y="52" width="10" height="30" fill={lime} />
+        </>
+      );
+      break;
+    case "charts":
+      art = (
+        <>
+          <rect x="28" y="50" width="12" height="34" fill={lime} />
+          <rect x="46" y="38" width="12" height="46" fill={lime} />
+          <rect x="64" y="26" width="12" height="58" fill={lime} />
+        </>
+      );
+      break;
+    case "stats":
+    case "ml":
+      art = (
+        <path d="M24 78c10-40 12-50 16-44s8 44 14 40 10-30 14-30 10 34 25 34" {...s} />
+      );
+      break;
+    case "mli":
+    case "pred":
+      art = (
+        <>
+          <circle cx="30" cy="36" r="5" fill={lime} />
+          <circle cx="76" cy="42" r="5" fill={lime} />
+          <circle cx="52" cy="76" r="5" fill={lime} />
+          <line x1="32" y1="38" x2="74" y2="41" {...s} />
+          <line x1="32" y1="38" x2="51" y2="73" {...s} />
+          <line x1="74" y1="44" x2="53" y2="72" {...s} />
+        </>
+      );
+      break;
+    case "text":
+      art = (
+        <>
+          <line x1="28" y1="32" x2="78" y2="32" {...s} />
+          <line x1="28" y1="50" x2="72" y2="50" {...s} />
+          <line x1="28" y1="68" x2="62" y2="68" {...s} />
+        </>
+      );
+      break;
+    case "img":
+      art = (
+        <>
+          <rect x="28" y="30" width="24" height="24" {...s} />
+          <rect x="54" y="44" width="24" height="24" {...s} />
+          <rect x="38" y="56" width="24" height="24" {...s} />
+        </>
+      );
+      break;
+    default:
+      art = <path d="M50 22 30 56h16l-6 28 26-38H48l8-24Z" fill={lime} />;
+  }
+
+  return (
+    <svg viewBox="0 0 106 106" aria-hidden className="h-full w-full">
+      {art}
+    </svg>
   );
-  const reduced = useReducedMotion();
-  const track = tracks.find((t) => t.id === selected)!;
+}
 
+/** The list: a menu of what you learn with drawn bullets. */
+export function Tracks() {
   return (
     <section
       id="tracks"
-      className="relative scroll-mt-20 overflow-hidden py-28 sm:py-36"
+      className="chapter bg-panel text-paper"
+      data-chapter="tracks"
     >
-      {/* Background geometry shifts subtly per track */}
-      <motion.div
-        aria-hidden
-        animate={
-          reduced
-            ? undefined
-            : {
-                x: selected === "beginner" ? "-10%" : "10%",
-                rotate: selected === "beginner" ? 0 : 12,
-              }
-        }
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute -top-32 right-0 h-[28rem] w-[28rem] rounded-full border border-lime/10"
-      />
-
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="flex flex-col gap-10 lg:flex-row lg:items-baseline lg:justify-between">
         <Reveal>
-          <p className="label-mono text-lime-dim">05 / Learning tracks</p>
+          <h2 className="step-head h-head">What you learn.</h2>
         </Reveal>
         <Reveal delay={0.08}>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Find your starting point.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.16}>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-            Two tracks, one community. Members are placed by their AI
-            understanding and programming experience — both run on DataCamp,
-            matched to your pace.
+          <p className="ink-soft step-body max-w-md lg:text-right">
+            Two self-paced tracks on DataCamp. Pick the one at your level.
           </p>
         </Reveal>
-
-        {/* Toggle */}
-        <Reveal delay={0.2}>
-          <div
-            role="group"
-            aria-label="Choose a learning track"
-            className="mt-12 inline-flex rounded-full border border-line bg-ink-2 p-1.5 md:hidden"
-          >
-            {tracks.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                aria-pressed={selected === t.id}
-                onClick={() => setSelected(t.id)}
-                className={cn(
-                  "relative min-h-11 cursor-pointer rounded-full px-6 py-2.5 font-display text-sm font-semibold transition-colors duration-300 sm:px-8",
-                  selected === t.id
-                    ? "text-ink"
-                    : "text-muted hover:text-paper",
-                )}
-              >
-                {selected === t.id && (
-                  <motion.span
-                    layoutId="track-pill"
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 rounded-full bg-lime"
-                  />
-                )}
-                <span className="relative">{t.label}</span>
-              </button>
-            ))}
-          </div>
-        </Reveal>
-
-        {/* Track panels */}
-        <div className="mt-10 grid gap-6 md:grid-cols-[1.4fr_1fr]">
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              key={track.id}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduced ? { opacity: 0 } : { opacity: 0, y: -12 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-3xl border border-lime/25 bg-ink-2 p-8 sm:p-10"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="label-mono text-lime-dim">
-                    Track {track.index}
-                  </p>
-                  <h3 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                    {track.label}
-                  </h3>
-                  <p className="mt-2 font-display text-lg text-lime">
-                    {track.level}
-                  </p>
-                </div>
-                <span className="font-display text-7xl font-bold text-lime/10 sm:text-8xl">
-                  {track.index}
-                </span>
-              </div>
-              <p className="mt-6 max-w-md text-base leading-relaxed text-muted">
-                {track.description}
-              </p>
-              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-                {track.topics.map((topic, i) => (
-                  <motion.li
-                    key={topic}
-                    initial={reduced ? false : { opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + i * 0.06, duration: 0.3 }}
-                    className="flex items-center gap-3 text-paper/90"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-lime/10 text-lime">
-                      <Check className="h-3.5 w-3.5" />
-                    </span>
-                    {topic}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* The other track, receding */}
-          {tracks
-            .filter((t) => t.id !== selected)
-            .map((other) => (
-              <motion.button
-                key={other.id}
-                type="button"
-                onClick={() => setSelected(other.id)}
-                initial={false}
-                animate={reduced ? undefined : { opacity: 0.75, scale: 0.985 }}
-                whileHover={reduced ? undefined : { opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="hidden cursor-pointer rounded-3xl border border-line bg-ink-2/60 p-8 text-left transition-colors duration-300 hover:border-lime/25 sm:p-10 md:block"
-              >
-                <p className="label-mono text-faint">Track {other.index}</p>
-                <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-muted">
-                  {other.label}
-                </h3>
-                <p className="mt-2 font-display text-base text-faint">
-                  {other.level}
-                </p>
-                <p className="label-mono mt-8 text-lime-dim">
-                  Switch track →
-                </p>
-              </motion.button>
-            ))}
-        </div>
       </div>
+
+      {tracks.map((track, ti) => (
+        <div key={track.id} className="mt-24">
+          <Reveal delay={0.05 * ti}>
+            <div className="flex items-baseline justify-between">
+              <h3 className="h-head step-head uppercase leading-none">
+                {track.label}
+              </h3>
+              <p className="step-small font-medium">{track.level}</p>
+            </div>
+            <p className="ink-soft mt-4 max-w-[52ch] step-body">
+              {track.description}
+            </p>
+          </Reveal>
+
+          <ul className="mt-10 grid gap-x-16 gap-y-9 sm:grid-cols-2">
+            {track.topics.map((topic, i) => (
+              <Reveal key={topic} delay={0.04 * i}>
+                <li className="flex items-start gap-5">
+                  <span
+                    aria-hidden
+                    className="h-16 w-16 shrink-0 rounded-[12px] bg-ink p-2"
+                  >
+                    <TopicBullet topic={topic} />
+                  </span>
+                  <span>
+                    <span className="block step-body font-bold leading-tight">
+                      {topic}
+                    </span>
+                    <span className="ink-soft mt-1 block max-w-[38ch] step-small leading-snug">
+                      {topicNotes[topic]}
+                    </span>
+                  </span>
+                </li>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      <Reveal delay={0.1}>
+        <div className="mt-20">
+          <p className="step-body font-bold">Members join from every course:</p>
+          <p className="ink-soft mt-3 font-medium leading-snug statement">
+            {disciplines.join(" · ")}
+          </p>
+        </div>
+      </Reveal>
     </section>
   );
 }

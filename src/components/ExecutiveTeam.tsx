@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Reveal } from "@/components/Reveal";
 import { committee, patron, type TeamMember } from "@/lib/content";
-import { cn } from "@/lib/utils";
+import { Reveal } from "@/components/Reveal";
 
 function initials(name: string) {
   return name
@@ -17,120 +14,73 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function MemberCard({
-  member,
-  dimmed,
-  onFocus,
-  onBlur,
-  featured = false,
-}: {
-  member: TeamMember;
-  dimmed: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
-  featured?: boolean;
-}) {
-  const reduced = useReducedMotion();
-
+function RosterRow({ member, large }: { member: TeamMember; large?: boolean }) {
   return (
-    <motion.div
-      onMouseEnter={onFocus}
-      onMouseLeave={onBlur}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      animate={
-        reduced
-          ? undefined
-          : { opacity: dimmed ? 0.55 : 1, scale: dimmed ? 0.985 : 1 }
-      }
-      transition={{ duration: 0.3 }}
-      className={cn(
-        "group flex flex-col rounded-2xl border border-line bg-ink-2 p-6 transition-colors duration-300 hover:border-lime/30",
-        featured && "sm:col-span-2 sm:flex-row sm:items-center sm:gap-8",
-      )}
+    <li
+      className={`flex items-center justify-between gap-6 odd:bg-white/[0.03] py-3 px-2 ${
+        large ? "py-4" : ""
+      }`}
     >
-      {/* Elegant placeholder portrait: monogram over node motif */}
-      <div
-        className={cn(
-          "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-ink",
-          featured ? "h-28 w-28" : "h-20 w-20",
-        )}
-        aria-hidden
+      <span
+        className={`leading-none font-bold ${
+          large ? "step-lead" : "step-body"
+        }`}
       >
-        <svg
-          viewBox="0 0 80 80"
-          className="absolute inset-0 h-full w-full opacity-20"
-        >
-          <circle cx="16" cy="18" r="2" fill="#A3E635" />
-          <circle cx="62" cy="26" r="1.5" fill="#F5F5F2" />
-          <circle cx="54" cy="64" r="2" fill="#A3E635" />
-          <line x1="16" y1="18" x2="62" y2="26" stroke="#F5F5F2" strokeWidth="0.5" />
-          <line x1="62" y1="26" x2="54" y2="64" stroke="#F5F5F2" strokeWidth="0.5" />
-        </svg>
-        <span
-          className={cn(
-            "relative font-display font-bold text-lime/80 transition-transform duration-500 group-hover:scale-110",
-            featured ? "text-3xl" : "text-2xl",
-          )}
-        >
-          {initials(member.name)}
-        </span>
-      </div>
-
-      <div className={cn("mt-5", featured && "sm:mt-0")}>
-        <p className="font-display text-lg font-semibold leading-snug">
-          {member.name}
-        </p>
-        <p
-          className={cn(
-            "label-mono mt-2 transition-colors duration-300",
-            dimmed ? "text-faint" : "text-muted group-hover:text-lime",
-          )}
-        >
-          {member.role}
-        </p>
-      </div>
-    </motion.div>
+        {member.name}
+      </span>
+      <span className="ink-soft shrink-0 text-right step-body">
+        {member.role}
+      </span>
+    </li>
   );
 }
 
+/**
+ * The team chapter: a roster on one ground, patron first. The initial
+ * block marks the patron; no cards, no portraits we do not have.
+ */
 export function ExecutiveTeam() {
-  const [focused, setFocused] = useState<string | null>(null);
-
   return (
-    <section id="team" className="scroll-mt-20 py-28 sm:py-36">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id="team" className="chapter text-paper" data-chapter="team">
+      <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
         <Reveal>
-          <p className="label-mono text-lime-dim">07 / Executive committee</p>
+          <h2 className="step-head h-head">The people.</h2>
         </Reveal>
         <Reveal delay={0.08}>
-          <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Meet the people behind TuringAI.
-          </h2>
+          <p className="ink-soft step-body max-w-md lg:text-right lg:pt-3">
+            A patron, two co-chairpersons and leads, all students or staff at
+            Makerere.
+          </p>
         </Reveal>
-
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Reveal className="sm:col-span-2 lg:col-span-3">
-            <MemberCard
-              member={patron}
-              featured
-              dimmed={focused !== null && focused !== patron.name}
-              onFocus={() => setFocused(patron.name)}
-              onBlur={() => setFocused(null)}
-            />
-          </Reveal>
-          {committee.map((member, i) => (
-            <Reveal key={member.name} delay={0.05 * (i % 3)}>
-              <MemberCard
-                member={member}
-                dimmed={focused !== null && focused !== member.name}
-                onFocus={() => setFocused(member.name)}
-                onBlur={() => setFocused(null)}
-              />
-            </Reveal>
-          ))}
-        </div>
       </div>
+
+      <Reveal delay={0.1}>
+        <div className="mt-16 flex items-center gap-4">
+          <span
+            aria-hidden
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] bg-lime"
+          >
+            <span className="text-ink text-xl font-bold">
+              {initials(patron.name)}
+            </span>
+          </span>
+          <p className="step-lead font-bold">{patron.name}</p>
+          <p className="ink-soft ml-auto text-[17px]">{patron.role}</p>
+        </div>
+      </Reveal>
+
+      <ul className="mt-10 grid gap-x-16 sm:grid-cols-2">
+        <Reveal delay={0.06}>
+          {committee.slice(0, 5).map((member) => (
+            <RosterRow key={member.name} member={member} />
+          ))}
+        </Reveal>
+        <Reveal delay={0.12}>
+          {committee.slice(5).map((member) => (
+            <RosterRow key={member.name} member={member} />
+          ))}
+        </Reveal>
+      </ul>
     </section>
   );
 }

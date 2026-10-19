@@ -1,75 +1,48 @@
 "use client";
 
-import { Mail, MessageCircle, ArrowRight } from "lucide-react";
-import { Reveal } from "@/components/Reveal";
-import { MagneticButton } from "@/components/MagneticButton";
 import { CONTACT_EMAIL } from "@/lib/content";
 
+/** The close: the brand inverted (lime ground, ink text), one headline
+ * echoing the hero, one sentence and one dark button on a shared baseline. */
 export function JoinCTA() {
+  const mailto = `mailto:${CONTACT_EMAIL}?subject=Joining%20TuringAI%20Club`;
+
   return (
     <section
       id="join"
-      className="relative scroll-mt-20 overflow-hidden py-32 sm:py-44"
+      className="chapter !pb-[80px] bg-lime text-ink"
+      data-chapter="join"
     >
-      <div className="bg-grid absolute inset-0" aria-hidden />
-      <div
-        aria-hidden
-        className="absolute left-1/2 top-1/2 h-[36rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/[0.06] blur-3xl"
-      />
+      <h2 className="display">Start&nbsp;here.</h2>
 
-      <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <Reveal>
-          <p className="label-mono text-lime-dim">08 / Join us</p>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <h2 className="mt-5 font-display text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-            Your next idea could{" "}
-            <span className="text-lime">start here.</span>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.16}>
-          <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-muted">
-            Join a community of students learning AI, exploring problems, and
-            building practical skills together.
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.24}>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <MagneticButton href={`mailto:${CONTACT_EMAIL}?subject=Joining%20TuringAI%20Club`}>
-              Join TuringAI
-              <ArrowRight className="h-4 w-4" />
-            </MagneticButton>
-            <MagneticButton href={`mailto:${CONTACT_EMAIL}`} variant="ghost">
-              <Mail className="h-4 w-4" />
-              Get in Touch
-            </MagneticButton>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.32}>
-          <div className="mx-auto mt-12 flex max-w-md flex-col items-center gap-3 rounded-2xl border border-dashed border-line bg-ink-2/60 px-6 py-5">
-            <span className="flex items-center gap-2 text-sm text-muted">
-              <MessageCircle className="h-4 w-4 text-lime-dim" />
-              WhatsApp community group
-            </span>
-            <span className="label-mono text-faint">
-              Link shared after joining — ask any committee member
-            </span>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.4}>
-          <div className="mt-12 space-y-2">
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="inline-block text-paper/90 underline decoration-lime/40 underline-offset-4 transition-colors hover:text-lime"
-            >
-              {CONTACT_EMAIL}
-            </a>
-            <p className="label-mono text-faint">CEDAT · Makerere University</p>
-          </div>
-        </Reveal>
+      <div className="mt-16 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+        <p className="max-w-xl step-body text-ink/80">
+          Join a community of students learning AI, picking real problems and
+          building together.{" "}
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=Question`}
+            className="font-bold text-ink underline underline-offset-4"
+          >
+            Questions welcome.
+          </a>{" "}
+          The WhatsApp group link is shared as soon as you write to us.
+        </p>
+        <a
+          href={mailto}
+          className="inline-flex shrink-0 items-center gap-3 bg-ink px-7 py-4 font-bold text-lime transition-transform duration-200 hover:-translate-y-0.5"
+        >
+          Write to the club
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
+            <path
+              d="M2 9h13M10 3l6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
       </div>
     </section>
   );

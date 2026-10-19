@@ -1,178 +1,175 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  AnimatePresence,
   motion,
   useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
 } from "framer-motion";
-import { Bus, CloudSun, Wallet, BookOpenText } from "lucide-react";
+import { concepts, type Concept } from "@/lib/content";
 import { Reveal } from "@/components/Reveal";
-import { cn } from "@/lib/utils";
-
-type Concept = {
-  id: string;
-  icon: typeof Bus;
-  problem: string;
-  idea: string;
-  solution: string;
-};
-
-// Generic visual concepts only — illustrative, not TuringAI projects.
-const CONCEPTS: Concept[] = [
-  {
-    id: "transport",
-    icon: Bus,
-    problem: "Long, unpredictable waits for campus transport",
-    idea: "Predict demand from simple historical patterns",
-    solution: "A smarter picture of when to travel",
-  },
-  {
-    id: "weather",
-    icon: CloudSun,
-    problem: "Farmers guessing when the rain will come",
-    idea: "Learn from local weather and season data",
-    solution: "Clearer planting windows",
-  },
-  {
-    id: "budget",
-    icon: Wallet,
-    problem: "Student budgets that vanish mid-semester",
-    idea: "Spot spending patterns automatically",
-    solution: "Early warnings before money runs out",
-  },
-  {
-    id: "notes",
-    icon: BookOpenText,
-    problem: "Hours lost searching through scattered notes",
-    idea: "Let a model read and organize them",
-    solution: "Answers from your own material, faster",
-  },
-];
 
 const STEPS = ["Problem", "AI idea", "Possible solution"] as const;
 
-function ConceptCard({ concept }: { concept: Concept }) {
-  const [step, setStep] = useState(0);
-  const reduced = useReducedMotion();
-  const Icon = concept.icon;
-  const text = [concept.problem, concept.idea, concept.solution][step];
+/* Flat pictograms drawn for this subject: one lime line language on ink */
+function Pictogram({ id }: { id: string }) {
+  const common = {
+    fill: "none",
+    stroke: "var(--color-lime)",
+    strokeWidth: 10,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
 
+  if (id === "transport")
+    return (
+      <svg viewBox="0 0 200 200" aria-hidden className="h-[55%] w-[55%]">
+        <rect x="40" y="60" width="120" height="80" rx="14" {...common} />
+        <line x1="40" y1="100" x2="160" y2="100" {...common} />
+        <rect x="55" y="74" width="20" height="18" rx="4" {...common} />
+        <rect x="90" y="74" width="20" height="18" rx="4" {...common} />
+        <circle cx="70" cy="145" r="8" fill="var(--color-lime)" />
+        <circle cx="130" cy="145" r="8" fill="var(--color-lime)" />
+      </svg>
+    );
+  if (id === "weather")
+    return (
+      <svg viewBox="0 0 200 200" aria-hidden className="h-[55%] w-[55%]">
+        <path d="M60 90a24 24 0 0 1 44-8 20 20 0 0 1 36 8H60Z" {...common} />
+        <line x1="70" y1="115" x2="70" y2="135" {...common} />
+        <line x1="100" y1="115" x2="100" y2="145" {...common} />
+        <line x1="130" y1="115" x2="130" y2="135" {...common} />
+      </svg>
+    );
+  if (id === "budget")
+    return (
+      <svg viewBox="0 0 200 200" aria-hidden className="h-[55%] w-[55%]">
+        <ellipse cx="100" cy="135" rx="52" ry="16" {...common} />
+        <ellipse cx="100" cy="102" rx="52" ry="16" {...common} />
+        <ellipse cx="100" cy="70" rx="52" ry="16" {...common} />
+      </svg>
+    );
   return (
-    <div className="h-full">
-      <button
-        type="button"
-        onClick={() => setStep((s) => (s + 1) % 3)}
-        aria-label={`Concept card: ${concept.problem}. Currently showing ${STEPS[step]}. Activate to see next step.`}
-        className="group flex h-full w-full cursor-pointer flex-col rounded-2xl border border-line bg-ink-2 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-lime/30"
-      >
-        <div className="flex items-center justify-between">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-ink text-muted transition-colors duration-300 group-hover:text-lime">
-            <Icon className="h-4.5 w-4.5" />
-          </span>
-          <span className="label-mono text-faint">Concept</span>
-        </div>
-
-        {/* Step indicator */}
-        <div className="mt-6 flex items-center gap-2">
-          {STEPS.map((label, i) => (
-            <span
-              key={label}
-              className={cn(
-                "label-mono transition-colors duration-300",
-                i === step ? "text-lime" : "text-faint",
-              )}
-            >
-              {label}
-              {i < STEPS.length - 1 && (
-                <span className="ml-2 text-faint">→</span>
-              )}
-            </span>
-          ))}
-        </div>
-
-        <div className="relative mt-3 min-h-[5.5rem] flex-1">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={step}
-              initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduced ? { opacity: 0 } : { opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="text-base leading-relaxed text-paper/90"
-            >
-              {text}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-
-        <span className="label-mono mt-4 text-faint transition-colors duration-300 group-hover:text-muted">
-          <span className="sm:hidden">Tap to explore →</span>
-          <span className="hidden sm:inline">Click to explore →</span>
-        </span>
-      </button>
-    </div>
+    <svg viewBox="0 0 200 200" aria-hidden className="h-[55%] w-[55%]">
+      <rect x="55" y="55" width="90" height="110" rx="8" {...common} />
+      <line x1="100" y1="55" x2="100" y2="165" {...common} />
+      <line x1="70" y1="85" x2="90" y2="85" {...common} />
+      <line x1="112" y1="85" x2="132" y2="85" {...common} />
+      <line x1="70" y1="115" x2="90" y2="115" {...common} />
+      <line x1="112" y1="115" x2="132" y2="115" {...common} />
+    </svg>
   );
 }
 
-export function Theme() {
-  const reduced = useReducedMotion();
+function ConceptCard({
+  concept,
+  wide,
+}: {
+  concept: Concept;
+  wide: boolean;
+}) {
+  const [step, setStep] = useState(0);
+  const text = [concept.problem, concept.idea, concept.solution][step];
 
   return (
-    <section
-      className="relative overflow-hidden py-28 sm:py-36"
+    <button
+      type="button"
+      onClick={() => setStep((s) => (s + 1) % 3)}
+      aria-label={`${concept.label}: currently showing ${STEPS[step]}. Activate to see the next step.`}
+      className="flex h-full w-full cursor-pointer shrink-0 flex-col overflow-hidden rounded-[12px] bg-panel text-left transition-[filter] duration-200 hover:brightness-110"
+      style={{ width: wide ? 720 : undefined }}
     >
-      {/* Soft tint shift so the canvas keeps evolving */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-ink-2/70 to-transparent"
-      />
-      <div
-        aria-hidden
-        className="absolute -right-40 top-20 h-96 w-96 rounded-full bg-lime/[0.04] blur-3xl"
-      />
+      <span className="flex flex-1 items-center justify-center bg-ink">
+        <Pictogram id={concept.id} />
+      </span>
+      <span className="flex flex-col gap-2 bg-panel p-7">
+        <span className="h-head step-head uppercase leading-none">
+          {concept.label}
+        </span>
+        <span className="text-fog step-body leading-snug">{text}</span>
+        <span className="text-lime step-small mt-1 font-bold">
+          {STEPS[step]} · tap for the next step →
+        </span>
+      </span>
+    </button>
+  );
+}
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+/**
+ * The showcase: a held dark scene with a track of problem cards travelling
+ * right to left as the page scrolls. Reduced motion and phone: the same
+ * cards, no pin.
+ */
+export function Theme() {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
+  const [view, setView] = useState(1440);
+
+  useEffect(() => {
+    const onResize = () => setView(window.innerWidth);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const x = useTransform(
+    smooth,
+    [0, 0.72],
+    [view + 60, -(4 * 720 + 3 * 40 + 60 - view)]
+  );
+
+  return (
+    <section className="chapter !min-h-0 !p-0" data-chapter="theme">
+      {/* Desktop, motion on: hold the scene, travel the cards */}
+      {!reduced && (
+        <div ref={ref} className="hidden h-[210svh] lg:block">
+          <div className="sticky top-0 h-svh overflow-hidden bg-ink">
+            {/* No photograph: the dark ground lets the cards carry it */}
+            <Reveal>
+              <h2 className="h-head step-head absolute top-14 left-10 uppercase">
+                Everyday problems.
+              </h2>
+            </Reveal>
+            <p className="text-fog absolute top-[calc(56px+clamp(36px,4.4vw,68px)+40px)] left-12 max-w-[34ch] step-body font-medium">
+              Pick one you run into. Build something that helps with it.
+            </p>
+            <motion.div
+              style={reduced ? undefined : { x }}
+              className="absolute bottom-10 left-0 flex h-[560px] gap-10 pl-10"
+            >
+              {concepts.map((concept) => (
+                <div key={concept.id} className="h-full">
+                  <ConceptCard concept={concept} wide />
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      )}
+
+      {/* Phone, tablet and reduced motion: heading, then the cards stacked */}
+      <div className="p-5 lg:hidden">
         <Reveal>
-          <p className="label-mono text-lime-dim">02 / Semester theme</p>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            AI for <span className="text-lime">everyday</span> problems.
-          </h2>
-        </Reveal>
-        <Reveal delay={0.16}>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-            Pick a problem you actually run into. Build something that helps
-            with it.
+          <h2 className="h-head step-head uppercase">Everyday problems.</h2>
+          <p className="text-fog mt-4 max-w-md step-body">
+            Pick one you run into. Build something that helps with it.
           </p>
         </Reveal>
-
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {CONCEPTS.map((concept, i) => (
-            <Reveal key={concept.id} delay={0.07 * i} className="h-full">
-              <ConceptCard concept={concept} />
-            </Reveal>
+        <div className="mt-8 flex flex-col gap-5">
+          {concepts.map((concept) => (
+            <div key={concept.id} className="min-h-[420px]">
+              <ConceptCard concept={concept} wide={false} />
+            </div>
           ))}
         </div>
-
-        <Reveal delay={0.2}>
-          <p className="mt-14 max-w-2xl font-display text-xl font-medium text-paper/90 sm:text-2xl">
-            AI isn&apos;t only something to study.{" "}
-            <span className="text-lime">It&apos;s something to apply.</span>
-          </p>
-        </Reveal>
       </div>
-
-      {/* Decorative accent dots */}
-      <div
-        aria-hidden
-        className="absolute left-[8%] top-24 h-2 w-2 rounded-full bg-lime/40"
-      />
-      <div
-        aria-hidden
-        className="absolute right-[12%] bottom-24 h-1.5 w-1.5 rounded-full bg-paper/30"
-      />
     </section>
   );
 }
