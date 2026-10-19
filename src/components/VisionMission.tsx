@@ -3,7 +3,8 @@
 import { visionStatement, missionStatement } from "@/lib/content";
 import { Reveal } from "@/components/Reveal";
 
-/** The quiet second chapter: both statements, plain and readable. */
+/** The quiet second chapter: both statements, plain and readable, with
+ * room to breathe between them. */
 export function VisionMission() {
   return (
     <section
@@ -11,29 +12,25 @@ export function VisionMission() {
       className="chapter bg-panel text-paper"
       data-chapter="vision"
     >
-      <Reveal>
-        <h2 className="step-head h-head">Where we&apos;re going.</h2>
-      </Reveal>
-
-      <div className="mt-16 grid gap-12 md:grid-cols-2 md:gap-8">
-        <Reveal delay={0.06}>
-          <p className="step-lead font-bold">
-            <span aria-hidden className="mr-3 inline-block h-2 w-6 rounded-full bg-lime align-middle" />
-            Vision
-          </p>
-          <p className="ink-soft statement mt-3 max-w-xl">{visionStatement}</p>
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+        <Reveal>
+          <h2 className="section-head h-head">Where we&apos;re going.</h2>
         </Reveal>
-        <Reveal delay={0.12}>
-          <p className="step-lead font-bold">
-            <span aria-hidden className="mr-3 inline-block h-2 w-6 rounded-full bg-lime align-middle" />
-            Mission
+        <Reveal delay={0.08}>
+          <p className="ink-soft step-body max-w-md lg:pt-2 lg:text-right">
+            Open to every course at Makerere.
           </p>
-          <p className="ink-soft statement mt-3 max-w-xl">{missionStatement}</p>
         </Reveal>
       </div>
 
-      <Reveal delay={0.18}>
-        <p className="step-lead mt-16 font-bold">Open to every course at Makerere.</p>
+      <Reveal delay={0.08}>
+        <h3 className="step-lead mt-20 font-semibold">Vision</h3>
+        <p className="statement mt-4 max-w-[38ch]">{visionStatement}</p>
+      </Reveal>
+
+      <Reveal delay={0.14}>
+        <h3 className="step-lead mt-24 font-semibold">Mission</h3>
+        <p className="statement mt-4 max-w-[38ch]">{missionStatement}</p>
       </Reveal>
     </section>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { hero, navLinks } from "@/lib/content";
+import { hero, navLinks, tracks, disciplines, stages } from "@/lib/content";
 import { Mark } from "@/components/Mark";
 
 /** Live thing: the fixed rail is the navigation; the active section's
@@ -67,7 +67,7 @@ function ChapterRail({ active }: { active: string | null }) {
             />
             <span
               className={`leading-tight [writing-mode:vertical-rl] mr-5 step-small transition-colors duration-300 ${
-                isActive ? "font-bold text-paper" : "font-medium"
+                isActive ? "font-semibold text-paper" : "font-medium"
               }`}
             >
               {link.label}
@@ -97,11 +97,31 @@ function MobileBars() {
       {/* 5th link keeps the pair odd; the join anchor fills the gap */}
       <a
         href="#join"
-        className="flex h-[52px] items-start bg-lime px-4 py-3 step-small font-bold text-ink transition-colors hover:bg-[#d7fb63]"
+        className="flex h-[52px] items-start bg-lime px-4 py-3 step-small font-semibold text-ink transition-colors hover:bg-[#d7fb63]"
       >
         Join
       </a>
     </nav>
+  );
+}
+
+/** Proof line: the club's hard facts on one quiet row at the fold, at a
+ * readable size. Composed from content.ts so the numbers can never drift. */
+function ProofStrip() {
+  return (
+    <div
+      className="mt-auto"
+      style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
+    >
+      <p aria-label="TuringAI Club at a glance" className="ink-soft step-body pb-12 max-md:pb-6 font-medium">
+        {[
+          `${tracks.length} tracks`,
+          `${disciplines.length} disciplines`,
+          "DataCamp-backed",
+          `A year runs in ${stages.length} steps`,
+        ].join("  ·  ")}
+      </p>
+    </div>
   );
 }
 
@@ -120,22 +140,28 @@ export function Hero() {
         <ChapterRail active={active} />
 
         {/* Wordmark */}
-        <div className="flex items-center gap-3 px-6 pt-8 sm:px-10">
+        <div
+          className="flex items-center gap-3 pt-8"
+          style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
+        >
           <Mark className="h-8 w-8 text-lime" />
-          <p className="font-bold uppercase tracking-[0.14em]">
+          <p className="text-base font-semibold">
             Turing<span className="text-lime">AI</span> Club
           </p>
         </div>
 
-        {/* Headline + sentence + action, left-anchored like the logo lockup */}
-        <div className="flex flex-1 flex-col justify-center px-6 pb-16 pt-10 sm:px-10">
+        {/* Headline → sentence → one action, on a measured column */}
+        <div
+          className="flex flex-1 flex-col justify-center pb-16 pt-10"
+          style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
+        >
           {reduced ? (
-            <h1 className="display max-w-[12ch]">
+            <h1 className="display mt-5 max-w-[12ch] text-paper">
               AI, <span className="text-lime">done here.</span>
             </h1>
           ) : (
             <motion.h1
-              className="display max-w-[12ch]"
+              className="display mt-5 max-w-[12ch] text-paper"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -143,21 +169,23 @@ export function Hero() {
               AI, <span className="text-lime">done here.</span>
             </motion.h1>
           )}
+
           <motion.p
-            className="ink-soft step-lead mt-8 max-w-[34ch] font-medium"
+            className="ink-soft step-lead mt-8 max-w-[46ch] font-medium"
             initial={reduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
           >
             {hero.sentence}
           </motion.p>
+
           <motion.div
             className="mt-10"
             initial={reduced ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            <a href="#join" className="btn">
+            <a href="#join" className="btn-pill">
               Join the club
               <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
                 <path
@@ -173,13 +201,15 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* The mark as the hero's graphic, drawn in on load */}
+        {/* The mark as the hero's graphic, drawn in on load, held back now */}
         <motion.div
           style={reduced ? undefined : { y: markY }}
-          className="pointer-events-none absolute bottom-[8vh] right-[10%] hidden w-[clamp(240px,24vw,400px)] text-lime/90 md:block"
+          className="pointer-events-none absolute right-[6%] bottom-[13vh] hidden w-[clamp(220px,22vw,380px)] text-lime/90 md:block"
         >
           <Mark animate className="w-full" />
         </motion.div>
+
+        <ProofStrip />
       </div>
       <MobileBars />
     </header>

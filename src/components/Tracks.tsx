@@ -106,7 +106,8 @@ function TopicBullet({ topic }: { topic: string }) {
   );
 }
 
-/** The list: a menu of what you learn with drawn bullets. */
+/** The list: an index of what you learn — topic left, note right, a
+ * quiet row-lift on hover. */
 export function Tracks() {
   return (
     <section
@@ -114,43 +115,45 @@ export function Tracks() {
       className="chapter bg-panel text-paper"
       data-chapter="tracks"
     >
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-baseline lg:justify-between">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <Reveal>
-          <h2 className="step-head h-head">What you learn.</h2>
+          <h2 className="section-head h-head">What you learn.</h2>
         </Reveal>
         <Reveal delay={0.08}>
-          <p className="ink-soft step-body max-w-md lg:text-right">
+          <p className="ink-soft step-body max-w-md lg:pt-2 lg:text-right">
             Two self-paced tracks on DataCamp. Pick the one at your level.
           </p>
         </Reveal>
       </div>
 
       {tracks.map((track, ti) => (
-        <div key={track.id} className="mt-24">
+        <div key={track.id} className={ti === 0 ? "mt-24" : "mt-20"}>
           <Reveal delay={0.05 * ti}>
-            <div className="flex items-baseline justify-between">
-              <h3 className="h-head step-head uppercase leading-none">
+            <div className="flex items-baseline justify-between gap-6">
+              <h3 className="text-2xl font-semibold tracking-[-0.02em] sm:text-3xl">
                 {track.label}
               </h3>
-              <p className="step-small font-medium">{track.level}</p>
+              <p className="text-fog step-small font-medium">
+                {track.level}
+              </p>
             </div>
             <p className="ink-soft mt-4 max-w-[52ch] step-body">
               {track.description}
             </p>
           </Reveal>
 
-          <ul className="mt-10 grid gap-x-16 gap-y-9 sm:grid-cols-2">
+          <ul className="mt-12 grid gap-x-16 gap-y-2 sm:grid-cols-2">
             {track.topics.map((topic, i) => (
               <Reveal key={topic} delay={0.04 * i}>
-                <li className="flex items-start gap-5">
+                <li className="-mx-3 flex items-start gap-5 rounded-lg px-3 py-4 transition-colors duration-200 hover:bg-white/[0.03]">
                   <span
                     aria-hidden
-                    className="h-16 w-16 shrink-0 rounded-[12px] bg-ink p-2"
+                    className="h-14 w-14 shrink-0 rounded-lg bg-ink p-2"
                   >
                     <TopicBullet topic={topic} />
                   </span>
                   <span>
-                    <span className="block step-body font-bold leading-tight">
+                    <span className="block step-body font-semibold leading-tight">
                       {topic}
                     </span>
                     <span className="ink-soft mt-1 block max-w-[38ch] step-small leading-snug">
@@ -165,9 +168,9 @@ export function Tracks() {
       ))}
 
       <Reveal delay={0.1}>
-        <div className="mt-20">
-          <p className="step-body font-bold">Members join from every course:</p>
-          <p className="ink-soft mt-3 font-medium leading-snug statement">
+        <div className="mt-24">
+          <p className="ink-soft step-body">Members join from every course:</p>
+          <p className="statement mt-6 max-w-[52ch]">
             {disciplines.join(" · ")}
           </p>
         </div>

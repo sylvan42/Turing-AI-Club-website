@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { navLinks, CONTACT_EMAIL, BASE } from "@/lib/content";
-import { Mark } from "@/components/Mark";
+import { navLinks, stages, CONTACT_EMAIL, BASE } from "@/lib/content";
 
 function KampalaTime() {
   const [time, setTime] = useState("");
@@ -19,31 +18,39 @@ function KampalaTime() {
     return () => clearInterval(id);
   }, []);
   return (
-    <p className="step-lead font-bold">
-      Kampala · <span aria-label="local time">{time}</span>
-    </p>
+    <span aria-label="local time">{time}</span>
   );
 }
 
-/** The footer: one tile board, dark panels with lime for the invite. */
+/** The footer: an OpenAI-style sitemap — wordmark row, link columns,
+ * one quiet bottom bar. No tile board. */
 export function Footer() {
   const mailto = `mailto:${CONTACT_EMAIL}`;
 
-  const tile =
-    "flex flex-col justify-between p-6 min-h-[220px] rounded-[12px] bg-panel";
-
   return (
-    <footer className="footer-board isolate bg-ink">
-      <div className="grid gap-2 md:grid-cols-12">
-        <div className={`${tile} md:col-span-4`}>
-          <Mark className="h-9 w-9 self-start text-lime" />
-          <p className="step-lead font-bold leading-tight">
+    <footer className="chapter !pb-12 !pt-24 bg-ink">
+      <div className="grid gap-12 md:grid-cols-12 md:gap-8">
+        {/* Wordmark */}
+        <div className="md:col-span-5">
+          <Image
+            src={`${BASE}/logo.png`}
+            alt="TuringAI Club logo, taglined AI for transformation"
+            width={280}
+            height={86}
+            className="h-auto w-44 self-start"
+          />
+          <p className="step-lead mt-8 max-w-[16ch] font-semibold leading-tight">
             Learn. Collaborate. Build. Demonstrate.
+          </p>
+          <p className="ink-soft step-small mt-4">
+            AI for transformation
           </p>
         </div>
 
-        <nav aria-label="Footer" className={`${tile} md:col-span-3`}>
-          <ul className="space-y-2 step-body font-medium">
+        {/* Explore */}
+        <nav aria-label="Footer" className="md:col-span-3">
+          <p className="step-small font-semibold">Explore</p>
+          <ul className="mt-6 space-y-3 step-body font-medium">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a href={link.href} className="transition-colors hover:text-lime">
@@ -54,65 +61,43 @@ export function Footer() {
           </ul>
         </nav>
 
-        <div className={`${tile} md:col-span-2`}>
-          <KampalaTime />
-          <p className="ink-soft step-small">East Africa Time (UTC+3)</p>
-        </div>
+        {/* The year */}
+        <nav aria-label="The club year" className="md:col-span-2">
+          <p className="step-small font-semibold">The year</p>
+          <ul className="mt-6 space-y-3 step-body font-medium">
+            {stages.map((stage) => (
+              <li key={stage.name}>
+                <a href="#how-it-works" className="transition-colors hover:text-lime">
+                  {stage.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-        <div className={`${tile} md:col-span-3`}>
-          <p className="ink-soft step-small font-medium">
-            One email reaches everyone:
-          </p>
+        {/* Contact */}
+        <div className="md:col-span-2">
+          <p className="step-small font-semibold">Contact</p>
           <a
             href={mailto}
-            className="step-body font-bold break-all hover:text-lime"
+            className="step-body mt-6 block w-fit font-semibold break-all text-lime underline decoration-lime decoration-2 underline-offset-4 transition-colors hover:text-paper"
           >
             {CONTACT_EMAIL}
           </a>
-        </div>
-
-        <div className={`${tile} !min-h-[320px] !bg-ink md:col-span-8`}>
-          <Image
-            src={`${BASE}/logo.png`}
-            alt="TuringAI Club logo, taglined AI for transformation"
-            width={320}
-            height={95}
-            className="h-auto w-64 self-center md:w-[420px]"
-          />
-          <p className="ink-soft step-small flex items-center gap-4">
-            <Mark className="h-6 w-6 text-lime" />
-            CEDAT · Makerere University · Kampala
+          <p className="ink-soft step-small mt-4 max-w-[26ch]">
+            One email reaches everyone. The WhatsApp link is shared when you
+            write.
           </p>
         </div>
+      </div>
 
-        <a
-          href={mailto}
-          className={`${tile} !bg-lime text-ink md:col-span-4 hover:bg-[#d7fb63]`}
-        >
-          <p className="step-lead font-bold leading-tight">
-            Join the
-            <br />
-            club this
-            <br />
-            year.
-          </p>
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            aria-hidden
-            className="self-end"
-          >
-            <path
-              d="M4 20h30M22 8l12 12-12 12"
-              stroke="currentColor"
-              strokeWidth="4"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
+      {/* Bottom bar */}
+      <div className="ink-soft mt-24 flex flex-col gap-2 step-small sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          CEDAT · Makerere University · Kampala ·{" "}
+          <KampalaTime /> EAT (UTC+3)
+        </p>
+        <p>© {new Date().getFullYear()} TuringAI Club</p>
       </div>
     </footer>
   );

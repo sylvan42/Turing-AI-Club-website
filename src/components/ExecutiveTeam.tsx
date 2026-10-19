@@ -17,12 +17,12 @@ function initials(name: string) {
 function RosterRow({ member, large }: { member: TeamMember; large?: boolean }) {
   return (
     <li
-      className={`flex items-center justify-between gap-6 odd:bg-white/[0.03] py-3 px-2 ${
+      className={`flex items-center justify-between gap-6 odd:bg-white/[0.03] px-2 py-3 transition-colors duration-200 hover:bg-white/[0.06] ${
         large ? "py-4" : ""
       }`}
     >
       <span
-        className={`leading-none font-bold ${
+        className={`leading-none font-semibold ${
           large ? "step-lead" : "step-body"
         }`}
       >
@@ -42,12 +42,12 @@ function RosterRow({ member, large }: { member: TeamMember; large?: boolean }) {
 export function ExecutiveTeam() {
   return (
     <section id="team" className="chapter text-paper" data-chapter="team">
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
         <Reveal>
-          <h2 className="step-head h-head">The people.</h2>
+          <h2 className="section-head h-head">The people.</h2>
         </Reveal>
         <Reveal delay={0.08}>
-          <p className="ink-soft step-body max-w-md lg:text-right lg:pt-3">
+          <p className="ink-soft step-body max-w-md lg:pt-2 lg:text-right">
             A patron, two co-chairpersons and leads, all students or staff at
             Makerere.
           </p>
@@ -58,13 +58,13 @@ export function ExecutiveTeam() {
         <div className="mt-16 flex items-center gap-4">
           <span
             aria-hidden
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] bg-lime"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-lime"
           >
             <span className="text-ink text-xl font-bold">
               {initials(patron.name)}
             </span>
           </span>
-          <p className="step-lead font-bold">{patron.name}</p>
+          <p className="step-lead font-semibold">{patron.name}</p>
           <p className="ink-soft ml-auto text-[17px]">{patron.role}</p>
         </div>
       </Reveal>

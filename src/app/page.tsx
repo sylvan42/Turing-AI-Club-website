@@ -7,6 +7,7 @@ import { Tracks } from "@/components/Tracks";
 import { ExecutiveTeam } from "@/components/ExecutiveTeam";
 import { JoinCTA } from "@/components/JoinCTA";
 import { Footer } from "@/components/Footer";
+import { tracks, disciplines, stages } from "@/lib/content";
 
 export default function Home() {
   return (
