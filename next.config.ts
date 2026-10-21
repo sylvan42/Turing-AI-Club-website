@@ -5,6 +5,7 @@ const basePath = process.env.NODE_ENV === "production" ? `/${repoName}` : "";
 
 const nextConfig: NextConfig = {
   output: "export",
+  distDir: process.env.NODE_ENV === "production" ? ".next" : ".next-dev",
   basePath,
   trailingSlash: true,
   images: { unoptimized: true },

@@ -1,45 +1,47 @@
-"use client";
-
+import { ArrowUpRight, Mail, MessageCircle } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/content";
 
-/** The close: the brand inverted (lime ground, ink text), one headline
- * echoing the hero, one sentence and one dark pill on a shared baseline. */
 export function JoinCTA() {
-  const mailto = `mailto:${CONTACT_EMAIL}?subject=Joining%20TuringAI%20Club`;
-
   return (
-    <section
-      id="join"
-      className="chapter !pb-[90px] bg-lime text-ink"
-      data-chapter="join"
-    >
-      <h2 className="display">Start&nbsp;here.</h2>
-
-      <div className="mt-16 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-        <p className="max-w-xl step-body text-ink/80">
-          Join a community of students learning AI, picking real problems and
-          building together.{" "}
-          <a
-            href={`mailto:${CONTACT_EMAIL}?subject=Question`}
-            className="font-bold text-ink underline underline-offset-4"
-          >
-            Questions welcome.
-          </a>{" "}
-          The WhatsApp group link is shared as soon as you write to us.
-        </p>
-        <a href={mailto} className="btn-dark shrink-0">
-          Write to the club
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-            <path
-              d="M2 9h13M10 3l6 6-6 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
+    <section id="join" className="container pb-20 pt-4" aria-labelledby="join-heading">
+      <div className="hero-band on-green rounded-[16px] px-6 py-12 sm:px-12 sm:py-16">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-center">
+          <div className="max-w-[620px]">
+            <p className="eyebrow">Join TuringAI</p>
+            <h2 id="join-heading" className="display-lg mt-4">
+              Bring an idea. <span className="hl">Find your team.</span>
+            </h2>
+            <p className="lead mt-5 max-w-[48ch]">
+              Whether you’re opening Python for the first time or ready to train
+              a model, there’s a place for you here. Email us to get connected.
+            </p>
+            <ol className="mt-6 grid gap-2 text-[15px] text-white/90 sm:grid-cols-2">
+              <li className="flex items-center gap-2">
+                <Mail size={16} className="text-lime" aria-hidden="true" />
+                1. Email the club
+              </li>
+              <li className="flex items-center gap-2">
+                <MessageCircle size={16} className="text-lime" aria-hidden="true" />
+                2. Get the WhatsApp group link
+              </li>
+            </ol>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3">
+            <a
+              className="button button-lime"
+              href={`mailto:${CONTACT_EMAIL}?subject=Joining%20TuringAI%20Club`}
+            >
+              Write to the club <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a
+              className="button button-ghost"
+              href={`mailto:${CONTACT_EMAIL}?subject=Question`}
+            >
+              Ask a question
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

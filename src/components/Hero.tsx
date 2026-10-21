@@ -1,217 +1,92 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { hero, navLinks, tracks, disciplines, stages } from "@/lib/content";
-import { Mark } from "@/components/Mark";
-
-/** Live thing: the fixed rail is the navigation; the active section's
- * label lifts to white and its dot ticks lime. Watches the anchor sections. */
-function useActiveChapter(ids: string[]) {
-  const [active, setActive] = useState<string | null>(null);
-
-  useEffect(() => {
-    const sections = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
-    if (sections.length === 0) return;
-
-    const pick = () => {
-      const mid = window.innerHeight / 2;
-      let current: string | null = null;
-      for (const el of sections) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= mid && rect.bottom > mid) {
-          current = el.id;
-          break;
-        }
-      }
-      setActive(current);
-    };
-
-    pick();
-    const observer = new IntersectionObserver(pick, {
-      rootMargin: "-45% 0px -45% 0px",
-    });
-    for (const el of sections) observer.observe(el);
-    window.addEventListener("scroll", pick, { passive: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", pick);
-    };
-  }, [ids.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return active;
-}
-
-function ChapterRail({ active }: { active: string | null }) {
-  return (
-    <nav
-      aria-label="Site sections"
-      className="fixed top-0 right-0 z-40 hidden h-svh w-[76px] shrink-0 flex-col justify-center md:flex"
-    >
-      {navLinks.map((link) => {
-        const isActive = active === link.href.slice(1);
-        return (
-          <a
-            key={link.href}
-            href={link.href}
-            aria-current={isActive ? "true" : undefined}
-            className="group relative flex items-center gap-2 py-5 pl-6 text-fog transition-colors duration-300 hover:text-paper"
-          >
-            <span
-              aria-hidden
-              className={`h-2 w-2 rounded-full transition-colors duration-300 ${
-                isActive ? "bg-lime" : "bg-white/25 group-hover:bg-white/50"
-              }`}
-            />
-            <span
-              className={`leading-tight [writing-mode:vertical-rl] mr-5 step-small transition-colors duration-300 ${
-                isActive ? "font-semibold text-paper" : "font-medium"
-              }`}
-            >
-              {link.label}
-            </span>
-          </a>
-        );
-      })}
-    </nav>
-  );
-}
-
-function MobileBars() {
-  return (
-    <nav
-      aria-label="Site sections"
-      className="grid grid-cols-2 gap-px bg-ink md:hidden"
-    >
-      {navLinks.map((link) => (
-        <a
-          key={link.href}
-          href={link.href}
-          className="flex h-[52px] items-start bg-panel px-4 py-3 step-small font-medium text-paper transition-colors hover:bg-[#202020]"
-        >
-          {link.label}
-        </a>
-      ))}
-      {/* 5th link keeps the pair odd; the join anchor fills the gap */}
-      <a
-        href="#join"
-        className="flex h-[52px] items-start bg-lime px-4 py-3 step-small font-semibold text-ink transition-colors hover:bg-[#d7fb63]"
-      >
-        Join
-      </a>
-    </nav>
-  );
-}
-
-/** Proof line: the club's hard facts on one quiet row at the fold, at a
- * readable size. Composed from content.ts so the numbers can never drift. */
-function ProofStrip() {
-  return (
-    <div
-      className="mt-auto"
-      style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
-    >
-      <p aria-label="TuringAI Club at a glance" className="ink-soft step-body pb-12 max-md:pb-6 font-medium">
-        {[
-          `${tracks.length} tracks`,
-          `${disciplines.length} disciplines`,
-          "DataCamp-backed",
-          `A year runs in ${stages.length} steps`,
-        ].join("  ·  ")}
-      </p>
-    </div>
-  );
-}
+﻿import Link from "next/link";
+import { ArrowDown, ArrowRight } from "lucide-react";
+import { hero, stages, concepts } from "@/lib/content";
 
 export function Hero() {
-  const reduced = useReducedMotion();
-  const { scrollY } = useScroll();
-  // One live drift: the mark rises gently as the page leaves the hero
-  const markY = useTransform(scrollY, [0, 800], [0, -90]);
-
-  const active = useActiveChapter(navLinks.map((l) => l.href.slice(1)));
-
   return (
-    <header>
-      {/* Mobile bars sit on top of the hero, inside the flow */}
-      <div className="relative flex min-h-[92svh] flex-col md:h-svh">
-        <ChapterRail active={active} />
-
-        {/* Wordmark */}
-        <div
-          className="flex items-center gap-3 pt-8"
-          style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
-        >
-          <Mark className="h-8 w-8 text-lime" />
-          <p className="text-base font-semibold">
-            Turing<span className="text-lime">AI</span> Club
-          </p>
-        </div>
-
-        {/* Headline → sentence → one action, on a measured column */}
-        <div
-          className="flex flex-1 flex-col justify-center pb-16 pt-10"
-          style={{ paddingLeft: "var(--gutter)", paddingRight: "var(--gutter)" }}
-        >
-          {reduced ? (
-            <h1 className="display mt-5 max-w-[12ch] text-paper">
-              AI, <span className="text-lime">done here.</span>
+    <>
+      <section className="hero-band on-green" aria-labelledby="hero-title">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="container grid items-center gap-12 py-14 sm:py-20 lg:grid-cols-[1.2fr_1fr] lg:gap-16 lg:py-24">
+          <div>
+            <p className="eyebrow">Makerere University · CEDAT</p>
+            <h1 id="hero-title" className="display-xl mt-6 max-w-[12ch]">
+              {hero.title} <span className="hl">{hero.highlight}</span>
             </h1>
-          ) : (
-            <motion.h1
-              className="display mt-5 max-w-[12ch] text-paper"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              AI, <span className="text-lime">done here.</span>
-            </motion.h1>
-          )}
+            <p className="lead mt-6 max-w-[43ch]">{hero.sentence}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a className="button button-lime" href="#join">
+                Join the club <ArrowRight aria-hidden="true" />
+              </a>
+              <Link className="button button-ghost" href="/learning/">
+                Explore learning tracks
+              </Link>
+            </div>
+            <p className="mt-5 text-[14px]">
+              Every course welcome. No AI experience needed.
+            </p>
+          </div>
 
-          <motion.p
-            className="ink-soft step-lead mt-8 max-w-[46ch] font-medium"
-            initial={reduced ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          <aside
+            className="hero-ideas rounded-[16px] bg-lime-panel p-6 sm:p-8"
+            aria-labelledby="hero-ideas-title"
           >
-            {hero.sentence}
-          </motion.p>
-
-          <motion.div
-            className="mt-10"
-            initial={reduced ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <a href="#join" className="btn-pill">
-              Join the club
-              <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-                <path
-                  d="M2 9h13M10 3l6 6-6 6"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <p className="eyebrow">Start with a question</p>
+            <h2 id="hero-ideas-title" className="display-lg mt-4 max-w-[12ch]">
+              What could <span className="text-primary">you build?</span>
+            </h2>
+            <p className="mt-4 text-base">
+              Look around campus. Think about home. A problem you know could be
+              the start of your next project.
+            </p>
+            <ul className="mt-7 border-t border-forest/20">
+              {concepts.slice(0, 3).map((concept) => (
+                <li key={concept.id} className="border-b border-forest/20">
+                  <a
+                    className="group flex min-h-16 items-center justify-between gap-4 py-4 text-forest"
+                    href={`#idea-${concept.id}`}
+                  >
+                    <span>
+                      <span className="block text-[13px] font-medium">
+                        {concept.label}
+                      </span>
+                      <span className="mt-1 block text-base font-bold">
+                        {concept.question}
+                      </span>
+                    </span>
+                    <ArrowRight
+                      className="transition-transform group-hover:translate-x-1"
+                      size={20}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a className="link-green mt-5" href="#ideas">
+              Explore the possibilities <ArrowDown aria-hidden="true" />
             </a>
-          </motion.div>
+          </aside>
         </div>
-
-        {/* The mark as the hero's graphic, drawn in on load, held back now */}
-        <motion.div
-          style={reduced ? undefined : { y: markY }}
-          className="pointer-events-none absolute right-[6%] bottom-[13vh] hidden w-[clamp(220px,22vw,380px)] text-lime/90 md:block"
+      </section>
+      <div className="border-b border-mint-200 bg-mint-50">
+        <ol
+          aria-label="Your journey with TuringAI"
+          className="container grid grid-cols-2 gap-x-6 gap-y-4 py-6 sm:grid-cols-4"
         >
-          <Mark animate className="w-full" />
-        </motion.div>
-
-        <ProofStrip />
+          {stages.map((stage, index) => (
+            <li
+              key={stage.name}
+              className="flex items-center gap-3 text-[14px] font-bold text-forest sm:text-base"
+            >
+              <span className="text-[12px] font-medium text-primary">
+                0{index + 1}
+              </span>
+              {stage.name}
+            </li>
+          ))}
+        </ol>
       </div>
-      <MobileBars />
-    </header>
+    </>
   );
 }

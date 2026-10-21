@@ -1,55 +1,45 @@
-"use client";
-
+import { BookOpen, Presentation, Users, Wrench } from "lucide-react";
 import { stages } from "@/lib/content";
-import { Reveal } from "@/components/Reveal";
 
-/* Stage glyphs: the logo mark drawn to progressive completion.
-   Learn = one bar in; Demonstrate = the whole mark standing alone. */
-function StageGlyph({ step }: { step: number }) {
-  const barW = [58, 38, 24];
-  return (
-    <svg viewBox="0 0 100 96" aria-hidden className="h-10 w-10 text-lime" fill="currentColor">
-      {barW.slice(0, step).map((w, i) => (
-        <rect key={w} x={8} y={14 + i * 29} width={w} height={16} rx={8} />
-      ))}
-      {step === 4 && <circle cx={82} cy={80} r={12} />}
-    </svg>
-  );
-}
+const stageIcons = [BookOpen, Users, Wrench, Presentation];
 
-// Four equal cards: order carried by numbering, the reference is systematic.
 export function ClubProcess() {
   return (
-    <section
-      id="how-it-works"
-      className="chapter text-paper"
-      data-chapter="how-it-works"
-    >
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-        <Reveal>
-          <h2 className="section-head h-head">How a year runs.</h2>
-        </Reveal>
-        <Reveal delay={0.08}>
-          <p className="ink-soft step-body max-w-md lg:pt-2 lg:text-right">
-            DataCamp teaches the foundations at your own pace. The club turns
-            them into teams, prototypes and finished work.
-          </p>
-        </Reveal>
+    <section id="how-it-works" className="container section">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="eyebrow">How a club year works</p>
+        <h2 className="heading-1 mt-3">
+          Learn it. Try it. Build on it.
+        </h2>
+        <p className="mx-auto mt-4 max-w-[46ch]">
+          Build your foundations, find a team, and put your learning to work
+          through the four stages of the club year.
+        </p>
       </div>
-
-      <ul className="mt-16 grid gap-4 md:grid-cols-4">
-        {stages.map((stage, i) => (
-          <Reveal key={stage.name} delay={0.06 * i} className="h-full">
-            <li className="flex h-full min-h-[240px] flex-col rounded-xl bg-panel p-7 transition-colors duration-200 hover:bg-[#1c1c1c]">
-              <StageGlyph step={i + 1} />
-              <p className="step-body mt-8 font-semibold">{stage.name}</p>
-              <p className="ink-soft mt-2 max-w-[32ch] step-small leading-snug">
+      <ol className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <li
+          className="absolute left-[12.5%] right-[12.5%] top-7 hidden h-px bg-mint-200 lg:block"
+          aria-hidden="true"
+          role="presentation"
+        />
+        {stages.map((stage, index) => {
+          const Icon = stageIcons[index];
+          return (
+            <li key={stage.name} className="step relative text-center">
+              <span className="icon-circle relative bg-white">
+                <Icon size={24} strokeWidth={1.75} aria-hidden="true" />
+              </span>
+              <p className="mt-4 text-[13px] font-bold text-primary">
+                Step {index + 1}
+              </p>
+              <h3 className="heading-3 mt-1">{stage.name}</h3>
+              <p className="mx-auto mt-2 max-w-[26ch] text-base">
                 {stage.description}
               </p>
             </li>
-          </Reveal>
-        ))}
-      </ul>
+          );
+        })}
+      </ol>
     </section>
   );
 }
